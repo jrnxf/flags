@@ -44,7 +44,6 @@ export function Terminal({ quiz }: { quiz: Quiz }) {
           {/* Title bar */}
           <div className="flex items-center justify-between border-b border-white/12 px-3 py-2 text-xs">
             <span style={{ color: AMBER }}>vex</span>
-            <span className="text-white/35">geographic recall unit · v0.1</span>
           </div>
 
           {/* Status line — fixed mono columns of live data */}
@@ -93,11 +92,13 @@ function AnswerPanel({ quiz }: { quiz: Quiz }) {
     ? round.options.filter((o) => matchesQuery(o.name))
     : round.options
   const soleCode =
-    !answered && query !== "" && matches.length === 1 ? matches[0].code : null
+    !answered && query.length >= 3 && matches.length === 1
+      ? matches[0].code
+      : null
 
-  // Auto-accept once the query narrows to a single candidate — no Enter needed.
-  // pick() ignores extra calls, and soleCode drops to null once answered, so
-  // this fires exactly once per round.
+  // Auto-accept once at least three typed characters narrow the query to a
+  // single candidate — no Enter needed. pick() ignores extra calls, and
+  // soleCode drops to null once answered, so this fires exactly once per round.
   React.useEffect(() => {
     if (soleCode) quiz.pick(soleCode)
   }, [soleCode, quiz])
