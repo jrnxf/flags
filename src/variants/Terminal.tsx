@@ -131,9 +131,10 @@ function Complete({ quiz }: { quiz: Quiz }) {
 }
 
 // The type-to-answer interaction: a prompt input plus the candidate list. You
-// type the nation's name; options whose name no longer shares your prefix dim
-// to disabled, and the answer auto-submits the moment exactly one candidate
-// remains.
+// type the nation's name; each option underlines the prefix you've matched so
+// far, and options whose name no longer shares your prefix dim to disabled.
+// Press Enter to submit — allowed the moment exactly one candidate still
+// matches what you've typed.
 function AnswerPanel({ quiz }: { quiz: Quiz }) {
   const { round, picked, answered } = quiz
   const [typed, setTyped] = React.useState("")
@@ -144,16 +145,7 @@ function AnswerPanel({ quiz }: { quiz: Quiz }) {
     ? round.options.filter((o) => matchesQuery(o.name))
     : round.options
   const soleCode =
-    !answered && query.length >= 3 && matches.length === 1
-      ? matches[0].code
-      : null
-
-  // Auto-accept once at least three typed characters narrow the query to a
-  // single candidate — no Enter needed. pick() ignores extra calls, and
-  // soleCode drops to null once answered, so this fires exactly once per round.
-  React.useEffect(() => {
-    if (soleCode) quiz.pick(soleCode)
-  }, [soleCode, quiz])
+    !answered && query !== "" && matches.length === 1 ? matches[0].code : null
 
   return (
     <>
@@ -201,7 +193,18 @@ function AnswerPanel({ quiz }: { quiz: Quiz }) {
               >
                 {marker}
               </span>
-              <span className="truncate">{option.name}</span>
+              <span className="truncate">
+                {!answered && query !== "" && matched ? (
+                  <>
+                    <span className="underline decoration-2 underline-offset-2">
+                      {option.name.slice(0, query.length)}
+                    </span>
+                    {option.name.slice(query.length)}
+                  </>
+                ) : (
+                  option.name
+                )}
+              </span>
             </button>
           )
         })}
@@ -218,6 +221,11 @@ function AnswerPanel({ quiz }: { quiz: Quiz }) {
           disabled={answered}
           value={typed}
           onChange={(e) => setTyped(e.target.value)}
+          onKeyDown={(e) => {
+            // Enter submits, but only once the query has narrowed to a single
+            // candidate — hitting it any earlier is a no-op.
+            if (e.key === "Enter" && soleCode) quiz.pick(soleCode)
+          }}
           aria-label="Type the country name to answer"
           placeholder="type a nation to answer"
           autoComplete="off"
