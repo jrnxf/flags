@@ -29,7 +29,8 @@ function CornerBracket({ at }: { at: "tl" | "tr" | "bl" | "br" }) {
 }
 
 export function Terminal({ quiz }: { quiz: Quiz }) {
-  const { round, streak, best, accuracy, total } = quiz
+  const { round, streak, best, accuracy, total, seen, deckSize, complete } =
+    quiz
 
   return (
     <div
@@ -51,29 +52,75 @@ export function Terminal({ quiz }: { quiz: Quiz }) {
             <Field label="streak" value={pad2(streak)} accent />
             <Field label="best" value={pad2(best)} />
             <Field label="acc" value={`${accuracy}%`} />
+            <Field label="seen" value={`${pad2(seen)}/${deckSize}`} />
             <Field label="n" value={pad2(total)} />
           </div>
 
           <div className="p-4 sm:p-5">
-            {/* Flag plate */}
-            <div className="relative border border-white/15 p-3">
-              <CornerBracket at="tl" />
-              <CornerBracket at="tr" />
-              <CornerBracket at="bl" />
-              <CornerBracket at="br" />
-              <img
-                key={round.id}
-                src={flagUrl(round.answer.code)}
-                alt="Identify the country this flag belongs to"
-                className="mx-auto aspect-[3/2] w-full max-w-sm animate-in object-cover grayscale-0 duration-150 ease-out fade-in"
-              />
-            </div>
+            {complete ? (
+              <Complete quiz={quiz} />
+            ) : (
+              <>
+                {/* Flag plate */}
+                <div className="relative border border-white/15 p-3">
+                  <CornerBracket at="tl" />
+                  <CornerBracket at="tr" />
+                  <CornerBracket at="bl" />
+                  <CornerBracket at="br" />
+                  <img
+                    key={round.id}
+                    src={flagUrl(round.answer.code)}
+                    alt="Identify the country this flag belongs to"
+                    className="mx-auto aspect-[3/2] w-full max-w-sm animate-in object-cover grayscale-0 duration-150 ease-out fade-in"
+                  />
+                </div>
 
-            {/* Keyed by round so the typed query and focus reset each round. */}
-            <AnswerPanel key={round.id} quiz={quiz} />
+                {/* Keyed by round so the typed query and focus reset each round. */}
+                <AnswerPanel key={round.id} quiz={quiz} />
+              </>
+            )}
           </div>
         </section>
       </div>
+    </div>
+  )
+}
+
+// Shown once every flag in the deck has been answered. A flawless run — no
+// misses across the whole set — is a win; anything else is a completed set.
+function Complete({ quiz }: { quiz: Quiz }) {
+  const { perfect, deckSize, best, accuracy, restart } = quiz
+  return (
+    <div className="animate-in fade-in duration-200">
+      <div className="relative border border-white/15 p-6 text-center">
+        <CornerBracket at="tl" />
+        <CornerBracket at="tr" />
+        <CornerBracket at="bl" />
+        <CornerBracket at="br" />
+        <div
+          className="text-2xl font-medium tracking-wide"
+          style={{ color: AMBER }}
+        >
+          {perfect ? "you win" : "set complete"}
+        </div>
+        <p className="mt-2 text-xs text-white/50">
+          {perfect
+            ? `perfect run — all ${deckSize} flags, no misses`
+            : `you've been through all ${deckSize} flags`}
+        </p>
+        <div className="mt-4 flex justify-center gap-5 text-xs tabular-nums">
+          <Field label="best" value={pad2(best)} accent />
+          <Field label="acc" value={`${accuracy}%`} />
+        </div>
+      </div>
+
+      <button
+        autoFocus
+        onClick={restart}
+        className="mt-4 w-full border border-white/12 px-3 py-2.5 text-center font-mono text-sm lowercase transition-colors duration-100 not-disabled:hover:bg-[oklch(0.82_0.14_78)] not-disabled:hover:text-black"
+      >
+        play again
+      </button>
     </div>
   )
 }
@@ -155,8 +202,9 @@ function AnswerPanel({ quiz }: { quiz: Quiz }) {
         })}
       </div>
 
-      {/* Prompt: a bare terminal line — just the caret marker and the cursor. */}
-      <div className="mt-3 flex items-center gap-2 text-sm">
+      {/* Prompt: a bare terminal line — just the caret marker and the cursor.
+          Hidden on touch devices (tablet and below), where you tap options. */}
+      <div className="mt-3 hidden items-center gap-2 text-sm lg:flex">
         <span style={{ color: AMBER }} aria-hidden>
           &gt;
         </span>
