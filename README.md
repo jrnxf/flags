@@ -1,10 +1,10 @@
-# vex
+# flags
 
 **`guess the flag.`** — a fast, terminal-styled flag quiz.
 
 Type the nation, build a streak, beat your best.
 
-![vex](./public/og.png)
+![flags](./public/og.png)
 
 ## dev
 

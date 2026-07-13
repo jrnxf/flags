@@ -3,6 +3,6 @@
   <rect x="1.5" y="1.5" width="61" height="61" rx="10.5" fill="none" stroke="oklch(1 1 1 / 0.14)" stroke-width="1.5"/>
   <text x="50%" y="52%" text-anchor="middle" dominant-baseline="central"
         font-family="'Spline Sans Mono', ui-monospace, monospace" font-size="34" font-weight="700"
-        fill="oklch(0.82 0.14 78)">v</text>
+        fill="oklch(0.82 0.14 78)">f</text>
   <rect x="40" y="38" width="13" height="4" rx="1" fill="oklch(0.82 0.14 78)"/>
 </svg>

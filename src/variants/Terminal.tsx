@@ -40,15 +40,15 @@ export function Terminal({ quiz }: { quiz: Quiz }) {
           "repeating-linear-gradient(0deg, oklch(1 0 0 / 0.015) 0 1px, transparent 1px 3px)",
       }}
     >
-      <div className="mx-auto flex min-h-dvh max-w-2xl flex-col justify-center px-5 py-[max(1.5rem,env(safe-area-inset-top))]">
+      <div className="mx-auto flex min-h-dvh max-w-2xl flex-col justify-center px-4 py-[max(1.5rem,env(safe-area-inset-top))] sm:px-5">
         <section className="border border-white/12 bg-[oklch(0.175_0.008_70)] lowercase">
           {/* Title bar */}
           <div className="flex items-center justify-between border-b border-white/12 px-3 py-2 text-xs">
-            <span style={{ color: AMBER }}>vex</span>
+            <span style={{ color: AMBER }}>flags</span>
           </div>
 
           {/* Status line — fixed mono columns of live data */}
-          <div className="flex flex-wrap gap-x-5 gap-y-1 border-b border-white/12 px-3 py-2 text-xs tabular-nums">
+          <div className="flex flex-wrap gap-x-3 gap-y-1 border-b border-white/12 px-3 py-2 text-xs tabular-nums sm:gap-x-5">
             <Field label="streak" value={pad2(streak)} accent />
             <Field label="best" value={pad2(best)} />
             <Field label="acc" value={`${accuracy}%`} />
@@ -61,18 +61,23 @@ export function Terminal({ quiz }: { quiz: Quiz }) {
               <Complete quiz={quiz} />
             ) : (
               <>
-                {/* Flag plate */}
+                {/* Flag plate. The box holds a fixed 3:2 aspect so its height
+                    never shifts between rounds; each flag is object-contain'd
+                    inside it, so flags of any ratio (square Swiss, wide Qatar,
+                    the Nepal pennant) show in full — letterboxed, never cropped. */}
                 <div className="relative border border-white/15 p-3">
                   <CornerBracket at="tl" />
                   <CornerBracket at="tr" />
                   <CornerBracket at="bl" />
                   <CornerBracket at="br" />
-                  <img
-                    key={round.id}
-                    src={flagUrl(round.answer.code)}
-                    alt="Identify the country this flag belongs to"
-                    className="mx-auto aspect-[3/2] w-full max-w-sm animate-in object-cover grayscale-0 duration-150 ease-out fade-in"
-                  />
+                  <div className="mx-auto flex aspect-[3/2] w-full max-w-sm items-center justify-center">
+                    <img
+                      key={round.id}
+                      src={flagUrl(round.answer.code)}
+                      alt="Identify the country this flag belongs to"
+                      className="max-h-full max-w-full animate-in object-contain duration-150 ease-out fade-in"
+                    />
+                  </div>
                 </div>
 
                 {/* Keyed by round so the typed query and focus reset each round. */}
