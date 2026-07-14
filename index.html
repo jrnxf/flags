@@ -3,9 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#211f1c" />
+
+    <!-- Installed-PWA chrome. `*-capable` launches from the home screen without
+         browser UI; the translucent status bar lets the dark app fill the whole
+         screen (safe-area insets keep content clear of the notch). -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="flags" />
 
     <title>flags — guess the flag</title>
     <meta name="description" content="A fast, terminal-styled flag quiz. Type the nation, build a streak, beat your best." />

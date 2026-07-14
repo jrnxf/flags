@@ -32,7 +32,10 @@ export default defineConfig({
           "A fast, terminal-styled flag quiz. Type the nation, build a streak, beat your best.",
         theme_color: "#211f1c",
         background_color: "#211f1c",
-        display: "standalone",
+        // Fullscreen where supported (hides the status bar too); fall back to
+        // standalone on platforms that don't honor fullscreen.
+        display: "fullscreen",
+        display_override: ["fullscreen", "standalone"],
         orientation: "portrait",
         start_url: "/",
         scope: "/",
