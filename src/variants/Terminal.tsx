@@ -35,27 +35,7 @@ export function Terminal({ quiz }: { quiz: Quiz }) {
   const { round, streak, best, accuracy, seen, deckSize, complete } = quiz
 
   return (
-    <div
-      className="min-h-dvh bg-[oklch(0.155_0.008_70)] font-mono text-[oklch(0.86_0.02_80)]"
-      style={{
-        // Neutral CRT texture: a faint glow blooming from the center (where the
-        // flag sits) plus fine scanlines. All pure neutral — no hue — so the
-        // amber accents stay the only warmth. Kept on the scrolling container
-        // with the default (scroll) background attachment: `fixed` attachment
-        // is broken on iOS Safari — it rasterizes the layer at reduced
-        // resolution and leaves the bottom safe-area unpainted. Scroll
-        // attachment renders 1:1 and paints the full min-h-dvh box, to the edge.
-        //
-        // The scanline is a soft ramp (transparent → faint → transparent) over
-        // a 4px cell, not a hard 1px line. A hard edge beats against a retina
-        // phone's pixel grid — the pattern aliases into wide moiré bands that
-        // read as huge lines. A feathered edge resolves cleanly at any density.
-        backgroundImage: [
-          "radial-gradient(ellipse 85% 65% at 50% 42%, oklch(0.9 0 0 / 0.03), transparent 70%)",
-          "repeating-linear-gradient(to bottom, transparent 0, oklch(1 0 0 / 0.03) 2px, transparent 4px)",
-        ].join(", "),
-      }}
-    >
+    <div className="min-h-dvh bg-[oklch(0.155_0.008_70)] font-mono text-[oklch(0.86_0.02_80)]">
       <div className="mx-auto flex min-h-dvh max-w-2xl flex-col justify-center px-4 py-[max(1.5rem,env(safe-area-inset-top))] sm:px-5">
         <section className="border border-white/12 bg-[oklch(0.175_0.008_70)] lowercase">
           {/* Title bar */}
