@@ -1,8 +1,12 @@
 import * as React from "react"
 
-import { countries, type Country } from "@/lib/countries"
+import { countries, flagUrl, type Country } from "@/lib/countries"
 
 export const OPTION_COUNT = 4
+
+// How many upcoming flags to keep warmed in the browser cache so advancing a
+// round never waits on a fetch.
+const PRELOAD_AHEAD = 3
 
 // Total flags in one full pass. Finishing all of them completes a game.
 export const DECK_SIZE = countries.length
@@ -169,6 +173,18 @@ export function useQuiz(): Quiz {
   )
 
   React.useEffect(() => () => window.clearTimeout(advanceTimer.current), [])
+
+  // Warm the next few flags. Only the answer's flag is rendered (options are
+  // text), and answers are drawn from the end of the deck, so preloading its
+  // last entries keeps the images decoded and cached before their round shows.
+  // Fetching into a detached Image populates the cache; the render then hits it
+  // instantly. Runs on mount and after every draw, as the deck shrinks.
+  React.useEffect(() => {
+    game.deck.slice(-PRELOAD_AHEAD).forEach((country) => {
+      const img = new Image()
+      img.src = flagUrl(country.code)
+    })
+  }, [game.deck])
 
   const accuracy = total === 0 ? 0 : Math.round((correct / total) * 100)
 
