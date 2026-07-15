@@ -43,12 +43,16 @@ export function Terminal({ quiz }: { quiz: Quiz }) {
         // amber accents stay the only warmth. Kept on the scrolling container
         // with the default (scroll) background attachment: `fixed` attachment
         // is broken on iOS Safari — it rasterizes the layer at reduced
-        // resolution (blowing the scanlines up several times over) and leaves
-        // the bottom safe-area unpainted. Scroll attachment renders 1:1 and
-        // paints the full min-h-dvh box, all the way to the bottom edge.
+        // resolution and leaves the bottom safe-area unpainted. Scroll
+        // attachment renders 1:1 and paints the full min-h-dvh box, to the edge.
+        //
+        // The scanline is a soft ramp (transparent → faint → transparent) over
+        // a 4px cell, not a hard 1px line. A hard edge beats against a retina
+        // phone's pixel grid — the pattern aliases into wide moiré bands that
+        // read as huge lines. A feathered edge resolves cleanly at any density.
         backgroundImage: [
           "radial-gradient(ellipse 85% 65% at 50% 42%, oklch(0.9 0 0 / 0.03), transparent 70%)",
-          "repeating-linear-gradient(0deg, oklch(1 0 0 / 0.015) 0 1px, transparent 1px 3px)",
+          "repeating-linear-gradient(to bottom, transparent 0, oklch(1 0 0 / 0.03) 2px, transparent 4px)",
         ].join(", "),
       }}
     >
