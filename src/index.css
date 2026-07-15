@@ -137,8 +137,19 @@
   * {
     @apply border-border outline-ring/50;
     }
+  /* The app is a single dark "terminal" skin, but no `.dark` class is applied,
+     so `bg-background` resolves to white. Paint the page canvas the terminal's
+     own dark color instead — otherwise the white html/body shows through below
+     the `min-h-dvh` app container: in the bottom safe-area on a standalone PWA
+     launch and in iOS's rubber-band overscroll region. `overscroll-behavior`
+     stops the bounce that reveals that strip in the first place. */
+  html {
+    background-color: oklch(0.155 0.008 70);
+    }
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
+    background-color: oklch(0.155 0.008 70);
+    overscroll-behavior: none;
     }
   button:not(:disabled), [role="button"]:not(:disabled) {
     cursor: pointer;
